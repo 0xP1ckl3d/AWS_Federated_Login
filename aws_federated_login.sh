@@ -80,12 +80,20 @@ if [[ -n "$AWS_KEY" ]]; then
 
 elif [[ -n "$ENV_FILE" && -f "$ENV_FILE" ]]; then
   echo "📄 Loading credentials from environment file: $ENV_FILE"
+  unset AWS_PROFILE
+  unset AWS_ACCESS_KEY_ID
+  unset AWS_SECRET_ACCESS_KEY
+  unset AWS_SESSION_TOKEN
   set -a
   source "$ENV_FILE"
   set +a
   echo "🔐 Using credentials from env file: ${AWS_ACCESS_KEY_ID:-unset}"
 
+
 elif [[ -n "$AWS_PROFILE" ]]; then
+  unset AWS_ACCESS_KEY_ID
+  unset AWS_SECRET_ACCESS_KEY
+  unset AWS_SESSION_TOKEN
   export AWS_PROFILE
   echo "🔐 Using AWS CLI profile: $AWS_PROFILE"
   PROFILE_KEY=$(aws configure get aws_access_key_id --profile "$AWS_PROFILE" 2>/dev/null || echo "")
